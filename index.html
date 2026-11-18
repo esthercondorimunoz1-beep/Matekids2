@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Matekidss</title>
+<style>
+:root{--ink:#2b2350;--card:#fff;--line:#e6defa;--ok:#16a06b;--bad:#e8456b}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:linear-gradient(160deg,#fff1b8,#ffc9de) fixed;color:var(--ink);font-family:'Comic Sans MS','Trebuchet MS',system-ui,sans-serif;font-size:clamp(17px,2.4vw,20px)}
+header{display:flex;align-items:center;gap:10px;max-width:880px;margin:10px auto 0;background:var(--card);border-radius:22px;padding:8px 14px;box-shadow:0 4px 0 var(--line)}
+.logo{font-size:1.4rem;color:#ff7a59}#hn{flex:1;font-weight:700;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+header button{background:none;border:0;font-size:1.5rem;cursor:pointer}
+main{max-width:880px;margin:12px auto;padding:0 12px 24px}
+.card{background:var(--card);border-radius:26px;padding:18px;box-shadow:0 5px 0 var(--line);margin-top:12px}
+h1,h2{text-align:center;margin:.2em 0}p{line-height:1.45}
+button{font-family:inherit;color:inherit}
+.big{display:block;width:100%;margin-top:14px;padding:16px;font-size:1.3rem;font-weight:700;border:0;border-radius:20px;background:#ff7a59;color:#fff;cursor:pointer;box-shadow:0 5px 0 #c85535}
+.big:active{transform:translateY(4px)}
+.sm{border:2px solid var(--line);background:var(--card);border-radius:14px;padding:8px 12px;font-weight:700;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:4px solid #3aa7ff;outline-offset:2px}
+input{width:100%;font:inherit;font-size:1.4rem;text-align:center;padding:12px;border-radius:16px;border:3px solid var(--line)}
+.pick{display:flex;gap:10px;justify-content:center;margin:10px 0}
+.pk{flex:1;max-width:150px;font-size:3rem;border:4px solid var(--line);background:#fff;border-radius:22px;padding:10px;cursor:pointer}
+.pk small{display:block;font-size:1rem}.pk.on{border-color:#ff7a59;background:#fff0ea;transform:scale(1.06)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:12px}
+.op{border:0;border-radius:26px;padding:18px 12px;color:#fff;font-weight:700;font-size:1.3rem;cursor:pointer;box-shadow:0 6px 0 rgba(0,0,0,.2)}
+.op .ic{font-size:2.6rem;display:block}.op small{display:block;font-weight:400;font-size:.9rem;margin-top:4px}
+.eq{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;font-size:1.7rem;margin:10px 0}
+.grp{display:inline-block;border:3px dashed var(--line);border-radius:16px;padding:6px 10px}.gone{opacity:.25;filter:grayscale(1)}
+.num{font-size:2rem;font-weight:700;text-align:center}
+.lv{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px}
+.lvb{border:3px solid var(--line);background:#fff;border-radius:22px;padding:14px 8px;font-weight:700;cursor:pointer}
+.lvb big{display:block;font-size:2.2rem}.lvb:disabled{opacity:.45}
+.bar{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:center;font-weight:700}
+.stage{display:flex;align-items:center;gap:12px;margin:12px 0}
+.mas{font-size:4.5rem;line-height:1;animation:idle 3s ease-in-out infinite}.mas.happy{animation:happy .7s}.mas.sad{animation:shake .6s}
+.bub{flex:1;background:#fff;border-radius:22px;padding:12px 16px;font-weight:700;box-shadow:0 4px 0 var(--line)}
+.q{font-size:clamp(2.2rem,9vw,4rem);font-weight:700;text-align:center;margin:6px 0 14px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.opt{font-size:clamp(1.6rem,6vw,2.4rem);font-weight:700;padding:20px 8px;border-radius:22px;border:4px solid var(--line);background:#fff;cursor:pointer;box-shadow:0 5px 0 var(--line)}
+.opt.right{background:var(--ok);border-color:var(--ok);color:#fff}.opt.wrong{background:var(--bad);border-color:var(--bad);color:#fff;animation:shake .5s}
+.good{color:var(--ok);font-weight:700;font-size:1.3rem}.err{color:var(--bad);font-weight:700}
+#fb ol{padding-left:1.4em;line-height:1.6}.stars{font-size:2.6rem;text-align:center;letter-spacing:6px}
+#toast{position:fixed;left:50%;top:12px;transform:translate(-50%,-150%);background:#ffd23f;padding:12px 20px;border-radius:20px;font-weight:700;transition:transform .4s;z-index:9}
+#toast.on{transform:translate(-50%,0)}
+.cf{position:fixed;top:-40px;font-size:2rem;pointer-events:none;z-index:8;animation:fall 2.2s linear forwards}
+@keyframes idle{50%{transform:translateY(-6px) rotate(-3deg)}}
+@keyframes happy{30%{transform:translateY(-30px) scale(1.25) rotate(-8deg)}60%{transform:rotate(8deg)}}
+@keyframes shake{20%,60%{transform:translateX(-10px)}40%,80%{transform:translateX(10px)}}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<header><b class="logo">🧮 Matekids</b><span id="hn"></span><span id="ht"></span><button id="snd" aria-label="Sonido y voz">🔊</button><button id="mus" aria-label="Música">🎵</button></header>
+<main id="v"></main>
+<div id="toast" role="status"></div>
+<script>
+'use strict';
+/* ===== Datos ===== */
+const OPS={s:{n:'Sumas',sym:'+',c:'#ff7a59',ic:'➕'},r:{n:'Restas',sym:'−',c:'#2f8fe8',ic:'➖'},m:{n:'Multiplicaciones',sym:'×',c:'#8e5bff',ic:'✖️'},d:{n:'Divisiones',sym:'÷',c:'#16a06b',ic:'➗'}};
+const MASC={tigre:'🐯',osito:'🐻',gatito:'🐱'};
+const NQ=5,PASS=4;
+const LD=['Pequeños','Medianos','Decenas','Centenas','¡Gigantes!'];
+/* Rangos por nivel [a1,a2,b1,b2]: cada nivel tiene cientos o miles de combinaciones */
+const R={s:[[1,9,1,9],[5,20,5,20],[10,99,10,99],[100,500,50,500],[100,999,100,999]],
+r:[[1,9,1,9],[5,20,5,20],[10,99,10,99],[100,500,50,500],[100,999,100,999]],
+m:[[1,5,1,10],[2,9,2,10],[2,12,2,12],[10,99,2,9],[12,99,6,12]],
+d:[[2,5,1,10],[2,9,2,10],[2,12,2,12],[2,9,10,50],[3,12,12,99]]};
+const $=s=>document.querySelector(s),rnd=(a,b)=>Math.floor(Math.random()*(b-a+1))+a,pick=a=>a[rnd(0,a.length-1)];
+const esc=t=>String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+/* ===== Almacenamiento ===== */
+const KEY='matekids_v1';
+const def=()=>({name:'',mascot:'tigre',rec:{s:0,r:0,m:0,d:0},lvl:{s:1,r:1,m:1,d:1},st:{s:[0,0,0,0,0],r:[0,0,0,0,0],m:[0,0,0,0,0],d:[0,0,0,0,0]},seen:{},total:0,sound:true,music:true});
+let S;try{S=Object.assign(def(),JSON.parse(localStorage.getItem(KEY))||{})}catch(e){S=def()}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+
+/* ===== Audio: efectos, voz y música ===== */
+let AC=null;
+function ctx(){try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume()}catch(e){}return AC}
+function tone(f,t,d,type,v){const c=ctx();if(!c||!S.sound)return;const o=c.createOscillator(),g=c.createGain(),t0=c.currentTime+t;
+o.type=type||'sine';o.frequency.setValueAtTime(f,t0);g.gain.setValueAtTime(v||.18,t0);g.gain.exponentialRampToValueAtTime(.001,t0+d);o.connect(g);g.connect(c.destination);o.start(t0);o.stop(t0+d+.02)}
+const sfx={win:()=>[523,659,784,1047].forEach((f,i)=>tone(f,i*.09,.28,'triangle')),
+bad:()=>{tone(240,0,.22,'sawtooth',.12);tone(170,.2,.38,'sawtooth',.12)},
+lvl:()=>[523,659,784,659,784,1047,1319].forEach((f,i)=>tone(f,i*.11,.3,'triangle')),click:()=>tone(620,0,.07,'sine',.1)};
+function speak(t){if(!S.sound||!window.speechSynthesis)return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='es-ES';u.rate=.92;u.pitch=1.15;speechSynthesis.speak(u)}
+const hush=()=>{if(window.speechSynthesis)speechSynthesis.cancel()};
+let mus=null;
+function musicOn(){if(!S.music||!S.sound||mus)return;let i=0;const n=[262,294,330,392,440,392,330,294];
+mus=setInterval(()=>{tone(n[i%8]*(i%16<8?1:1.25),0,.35,'triangle',.05);if(i%4===0)tone(131,0,.5,'sine',.04);i++},420)}
+const musicOff=()=>{clearInterval(mus);mus=null};
+$('#snd').onclick=()=>{S.sound=!S.sound;if(!S.sound){hush();musicOff()}save();head()};
+$('#mus').onclick=()=>{S.music=!S.music;S.music?musicOn():musicOff();save();head()};
+
+/* ===== Pantalla ===== */
+function view(html){hush();musicOff();$('#v').innerHTML=html;head();scrollTo(0,0)}
+function head(){$('#hn').textContent=S.name?MASC[S.mascot]+' '+S.name:'';$('#ht').textContent=S.name?'⭐'+S.total:'';$('#snd').textContent=S.sound?'🔊':'🔇';$('#mus').style.opacity=S.music?1:.4}
+function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');setTimeout(()=>e.classList.remove('on'),2500)}
+function confetti(n){for(let i=0;i<n;i++){const s=document.createElement('span');s.className='cf';s.textContent=pick(['🎉','⭐','✨','🎈','🍭']);s.style.left=rnd(2,95)+'vw';s.style.animationDelay=Math.random()*.6+'s';document.body.appendChild(s);setTimeout(()=>s.remove(),3200)}}
+function react(kind,text){const m=$('#mas');if(!m)return;m.className='mas';void m.offsetWidth;m.className='mas '+kind;if(text)$('#bub').textContent=text}
+
+/* ===== Nombre ===== */
+let tmpM=S.mascot;
+function viewName(){view(`<div class="card"><h1>¡Hola, amiguito! 👋</h1><p style="text-align:center">¿Cómo te llamas?</p>
+<input id="nm" maxlength="20" placeholder="Escribe tu nombre" value="${esc(S.name)}" autocomplete="off"><p style="text-align:center">Elige a tu amigo:</p>
+<div class="pick">${Object.entries(MASC).map(([k,e])=>`<button class="pk${k===tmpM?' on':''}" onclick="chooseM('${k}')">${e}<small>${k}</small></button>`).join('')}</div>
+<button class="big" onclick="start()">¡Empezar!</button></div>`)}
+function chooseM(k){tmpM=k;document.querySelectorAll('.pk').forEach(b=>b.classList.toggle('on',b.textContent.includes(MASC[k])))}
+function start(){const n=$('#nm').value.trim();if(!n){$('#nm').focus();toast('Escribe tu nombre 😊');return}S.name=n;S.mascot=tmpM;save();ctx();sfx.win();menu();speak('¡Hola '+n+'! Bienvenido a Matekids. ¿Qué quieres practicar hoy?')}
+function menu(){view(`<h1>¡Hola, ${esc(S.name)}! ${MASC[S.mascot]}</h1><p style="text-align:center">¿Qué quieres practicar?</p>
+<div class="grid">${Object.entries(OPS).map(([k,o])=>`<button class="op" style="background:${o.c}" onclick="theory('${k}')"><span class="ic">${o.ic}</span>${o.n}<small>Nivel ${S.lvl[k]}/5 · Récord ${S.rec[k]}</small></button>`).join('')}</div>
+<button class="sm" style="margin:16px auto;display:block" onclick="viewName()">Cambiar nombre o amigo</button>`)}
+
+/* ===== Teoría con audio (inicia al elegir la sección) ===== */
+const dots=(e,n,c)=>Array.from({length:n},()=>`<span class="${c||''}">${e}</span>`).join('');
+const TH={
+s:{t:'Sumar es juntar',v:`<div class="eq"><span>${dots('🍎',3)}</span><b>+</b><span>${dots('🍎',2)}</span><b>=</b><span>${dots('🍎',5)}</span></div><div class="num">3 + 2 = 5</div><p style="text-align:center">Con números grandes: 24 + 13 → 24 + 10 = 34, y 34 + 3 = 37.</p>`,
+a:'Sumar es juntar cantidades. Si tienes tres manzanas y te regalan dos, juntas cinco. Tres más dos es igual a cinco. Con números grandes, los separamos en decenas y unidades: veinticuatro más trece. Primero sumamos diez y da treinta y cuatro. Luego sumamos tres y da treinta y siete.'},
+r:{t:'Restar es quitar',v:`<div class="eq"><span>${dots('🍪',3)}${dots('🍪',2,'gone')}</span><b>=</b><span>${dots('🍪',3)}</span></div><div class="num">5 − 2 = 3</div><p style="text-align:center">Con números grandes: 47 − 25 → 47 − 20 = 27, y 27 − 5 = 22.</p>`,
+a:'Restar es quitar. Si tienes cinco galletas y te comes dos, te quedan tres. Cinco menos dos es igual a tres. Con números grandes quitamos por partes: cuarenta y siete menos veinticinco. Primero quitamos veinte y quedan veintisiete. Luego quitamos cinco y quedan veintidós.'},
+m:{t:'Multiplicar es sumar grupos iguales',v:`<div class="eq">${[0,1,2].map(()=>`<span class="grp">${dots('⭐',4)}</span>`).join('')}</div><div class="num">4 + 4 + 4 = 12 → 3 × 4 = 12</div><p style="text-align:center">Truco: multiplicar por 10 agrega un cero.</p>`,
+a:'Multiplicar es sumar grupos iguales. Aquí hay tres grupos de cuatro estrellas. Cuatro más cuatro más cuatro es doce. Entonces tres por cuatro es igual a doce. Un truco: al multiplicar por diez, solo agregamos un cero.'},
+d:{t:'Dividir es repartir en partes iguales',v:`<div class="eq"><span class="grp">🧒${dots('🍬',3)}</span><span class="grp">🧒${dots('🍬',3)}</span></div><div class="num">6 ÷ 2 = 3</div><p style="text-align:center">Dividir y multiplicar son amigos: 3 × 4 = 12, entonces 12 ÷ 4 = 3.</p>`,
+a:'Dividir es repartir en partes iguales. Si repartimos seis dulces entre dos amigos, a cada uno le tocan tres. Seis dividido entre dos es igual a tres. Dividir y multiplicar son amigos: como tres por cuatro es doce, entonces doce dividido entre cuatro es tres.'}};
+function theory(k){const t=TH[k],o=OPS[k];ctx();
+view(`<div class="card"><div class="stage"><span class="mas">${MASC[S.mascot]}</span><div class="bub">¡Vamos a aprender ${o.n.toLowerCase()}, ${esc(S.name)}!</div></div>
+<h2 style="color:${o.c}">${t.t}</h2>${t.v}
+<button class="sm" onclick="speak(TH['${k}'].a)">🔊 Escuchar otra vez</button>
+<button class="big" style="background:${o.c}" onclick="levels('${k}')">¡A jugar!</button>
+<button class="sm" style="margin:12px auto 0;display:block" onclick="menu()">← Menú</button></div>`);
+speak('Hola '+S.name+'. '+t.a)}
+
+/* ===== Niveles ===== */
+const G={op:'s',lvl:1,i:0,ok:0,pts:0,streak:0,q:null,lock:true};
+function levels(k){G.op=k;const o=OPS[k];
+view(`<div class="card"><h2 style="color:${o.c}">${o.ic} ${o.n}</h2><p style="text-align:center">Récord: <b>${S.rec[k]}</b> · Saca ${PASS} de ${NQ} para subir de nivel.</p>
+<div class="lv">${[1,2,3,4,5].map(l=>{const st=S.st[k][l-1],lock=l>S.lvl[k];return `<button class="lvb" ${lock?'disabled':''} onclick="play(${l})"><big>${lock?'🔒':l}</big>${LD[l-1]}<br>${'★'.repeat(st)}${'☆'.repeat(3-st)}</button>`}).join('')}</div>
+<button class="sm" style="margin:14px 8px 0 0" onclick="theory('${k}')">📖 Teoría</button><button class="sm" onclick="menu()">← Menú</button></div>`)}
+
+/* ===== Banco aleatorio sin repeticiones =====
+   Cada ejercicio (operación+nivel+números) se registra en S.seen y no vuelve a salir
+   hasta agotar todas las combinaciones de ese nivel; entonces se reinicia solo ese nivel. */
+function gen(op,l,retry){const [a1,a2,b1,b2]=R[op][l-1],pre=op+l+':';
+for(let i=0;i<500;i++){let x=rnd(a1,a2),y=rnd(b1,b2);
+if(op==='r'){if(x===y)continue;if(x<y)[x,y]=[y,x]}
+const key=pre+x+':'+y;if(S.seen[key])continue;S.seen[key]=1;
+return op==='s'?{a:x,b:y,ans:x+y}:op==='r'?{a:x,b:y,ans:x-y}:op==='m'?{a:x,b:y,ans:x*y}:{a:x*y,b:x,ans:y}}
+if(!retry){Object.keys(S.seen).forEach(k=>{if(k.startsWith(pre))delete S.seen[k]});return gen(op,l,1)}
+return {a:2,b:1,ans:3}}
+function options(ans){const set=new Set([ans]),sp=Math.max(2,Math.round(ans*.15));let g=0;
+while(set.size<4&&g++<200){let v=ans+(rnd(0,1)?1:-1)*rnd(1,sp);if(g>40)v=ans+g;if(v>=0)set.add(v)}
+return [...set].sort(()=>Math.random()-.5)}
+
+/* ===== Explicación paso a paso ===== */
+function steps(op,q){const {a,b,ans}=q,t=b-b%10,u=b%10;
+if(op==='s'){if(t===0)return[`Empezamos en ${a}.`,`Contamos ${u} más y llegamos a ${ans}.`];const s=[`Separamos ${b} en ${t}${u?' más '+u:''}.`,`Sumamos ${t}: ${a} más ${t} es ${a+t}.`];if(u)s.push(`Sumamos ${u}: ${a+t} más ${u} es ${ans}.`);return s}
+if(op==='r'){if(t===0)return[`Empezamos en ${a}.`,`Quitamos ${u}, contando hacia atrás, y llegamos a ${ans}.`];const s=[`Separamos ${b} en ${t}${u?' más '+u:''}.`,`Quitamos ${t}: ${a} menos ${t} es ${a-t}.`];if(u)s.push(`Quitamos ${u}: ${a-t} menos ${u} es ${ans}.`);return s}
+if(op==='m'){const s=[`${a} por ${b} quiere decir ${b} grupos de ${a}.`];
+if(b<=6)s.push(`${Array(b).fill(a).join(' más ')} es ${ans}.`);
+else if(u===0)s.push(`${a} por ${b/10} es ${a*b/10}, y al multiplicar por 10 agregamos un cero: ${ans}.`);
+else if(t===0)s.push(`Separamos ${b} en 5 más ${b-5}.`,`${a} por 5 es ${a*5} y ${a} por ${b-5} es ${a*(b-5)}.`,`${a*5} más ${a*(b-5)} es ${ans}.`);
+else s.push(`Separamos ${b} en ${t} más ${u}.`,`${a} por ${t} es ${a*t} y ${a} por ${u} es ${a*u}.`,`${a*t} más ${a*u} es ${ans}.`);return s}
+return[`Preguntamos: ¿cuántas veces cabe ${b} en ${a}?`,`Buscamos un número que multiplicado por ${b} dé ${a}.`,`${b} por ${ans} es ${a}.`,`Entonces ${a} dividido entre ${b} es ${ans}.`]}
+function mistake(chosen,ans){const d=Math.abs(chosen-ans);return chosen>ans?`Elegiste ${chosen}, pero te pasaste por ${d}.`:`Elegiste ${chosen}, pero te faltaron ${d}.`}
+
+/* ===== Juego ===== */
+const GOOD=n=>[`¡Genial, ${n}!`,`¡Muy bien, ${n}! 🎉`,`¡Lo lograste, ${n}! 🌟`,`¡Eres un crack, ${n}!`];
+const OOPS=n=>[`¡Casi, ${n}! Mira cómo se resuelve.`,`No pasa nada, ${n}. ¡Aprendemos juntos!`,`¡Ánimo, ${n}! Vamos paso a paso.`];
+function play(l){Object.assign(G,{lvl:l,i:0,ok:0,pts:0,streak:0});
+view(`<div class="bar"><button class="sm" onclick="levels(G.op)">← Salir</button><span>Nivel ${l}</span><span id="gi"></span><span id="gp"></span><span id="gs"></span></div>
+<div class="stage"><span id="mas" class="mas">${MASC[S.mascot]}</span><div id="bub" class="bub">¡Tú puedes, ${esc(S.name)}!</div></div>
+<div class="card" style="border-top:8px solid ${OPS[G.op].c}"><div id="q" class="q"></div><div id="opts" class="opts"></div><div id="fb"></div></div>`);
+musicOn();next()}
+function stat(){$('#gi').textContent=`Pregunta ${Math.min(G.i,NQ)}/${NQ}`;$('#gp').textContent='⭐ '+G.pts;$('#gs').textContent='🔥 '+G.streak}
+function next(){hush();if(G.i>=NQ){endLevel();return}
+G.q=gen(G.op,G.lvl);G.i++;G.lock=false;save();stat();
+$('#q').textContent=`${G.q.a} ${OPS[G.op].sym} ${G.q.b} = ?`;
+$('#opts').innerHTML=options(G.q.ans).map(v=>`<button class="opt" data-v="${v}" onclick="answer(this)">${v}</button>`).join('');
+$('#fb').innerHTML='';react('',null)}
+
+/* Una sola comparación estricta decide resultado y sonido:
+   correcta → sfx.win + felicitación hablada; incorrecta → sfx.bad + explicación hablada. G.lock evita dobles toques. */
+function answer(btn){if(G.lock)return;G.lock=true;
+const chosen=Number(btn.dataset.v),correct=(chosen===G.q.ans),all=[...document.querySelectorAll('.opt')];all.forEach(b=>b.disabled=true);
+let html;
+if(correct){G.ok++;G.streak++;const gain=10*G.lvl+(G.streak>=3?5:0);G.pts+=gain;S.total+=gain;
+ const m=pick(GOOD(S.name));btn.classList.add('right');sfx.win();confetti(14);react('happy',m);setTimeout(()=>speak(m.replace(/[🎉🌟]/g,'')),700);
+ html=`<p class="good">¡Correcto! +${gain} puntos</p>`}
+else{G.streak=0;btn.classList.add('wrong');all.find(b=>Number(b.dataset.v)===G.q.ans).classList.add('right');
+ const st=steps(G.op,G.q),m=pick(OOPS(S.name));sfx.bad();react('sad',m);
+ setTimeout(()=>speak(`${S.name}. ${mistake(chosen,G.q.ans)} La respuesta correcta es ${G.q.ans}. ${st.join(' ')}`),700);
+ html=`<p class="err">${mistake(chosen,G.q.ans)} La respuesta correcta es <b>${G.q.ans}</b>:</p><ol>${st.map(s=>`<li>${s}</li>`).join('')}</ol>`}
+stat();save();
+$('#fb').innerHTML=html+`<button class="big" onclick="next()">${G.i>=NQ?'Ver resultado':'Siguiente'}</button>`}
+
+function endLevel(){musicOff();const k=G.op,l=G.lvl,stars=G.ok===5?3:G.ok===4?2:G.ok===3?1:0,passed=G.ok>=PASS,rec=G.pts>S.rec[k];
+S.st[k][l-1]=Math.max(S.st[k][l-1],stars);if(rec)S.rec[k]=G.pts;
+if(passed&&l<5&&S.lvl[k]<l+1)S.lvl[k]=l+1;
+if(passed){sfx.lvl();confetti(30)}save();head();
+const msg=passed?(l<5?`¡Pasaste al nivel ${l+1}!`:'¡Terminaste el nivel más difícil! 🏆'):`Necesitas ${PASS} aciertos para pasar. ¡Inténtalo otra vez!`;
+$('#v').innerHTML=`<div class="card"><div class="stage"><span id="mas" class="mas ${passed?'happy':''}">${MASC[S.mascot]}</span><div class="bub">${passed?'¡Excelente':'¡Buen intento'}, ${esc(S.name)}!</div></div>
+<div class="stars">${'★'.repeat(stars)}${'☆'.repeat(3-stars)}</div><div class="num">${G.ok} de ${NQ} · ${G.pts} puntos</div>
+${rec&&G.pts>0?'<p class="good" style="text-align:center">🏆 ¡Nuevo récord en '+OPS[k].n.toLowerCase()+'!</p>':''}<p style="text-align:center">${msg}</p>
+${passed&&l<5?`<button class="big" onclick="play(${l+1})">Siguiente nivel</button>`:''}
+<button class="big" style="background:#2f8fe8;box-shadow:0 5px 0 #1d68b0" onclick="play(${l})">Repetir nivel</button>
+<button class="sm" style="margin:12px 8px 0 0" onclick="levels('${k}')">Niveles</button><button class="sm" onclick="menu()">Menú</button></div>`;
+setTimeout(()=>speak(passed?`¡Excelente ${S.name}! ${msg}`:`¡Buen intento ${S.name}! Puedes intentarlo otra vez.`),900)}
+
+head();S.name?menu():viewName();
+</script>
+</body>
+</html>
